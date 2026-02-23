@@ -1,6 +1,8 @@
 import os
 import requests
 from smolagents import tool
+import re
+import json
 
 SERPAPI_KEY = os.getenv("SERPAPI_API_KEY")
 
@@ -30,10 +32,16 @@ def search_papers(query: str, num_results: int = 5) -> list:
 
     papers = []
     for result in data.get("organic_results", []):
+        summary = result.get("publication_info", {}).get("summary", "")
+        year_match = re.search(r"\b(19|20)\d{2}\b", summary)
+        year = year_match.group(0) if year_match else None
         papers.append({
             "title": result.get("title"),
-            "authors": result.get("publication_info", {}).get("authors"),
-            "year": result.get("publication_info", {}).get("year"),
+            "authors": [
+                            author["name"]
+                            for author in result.get("publication_info", {}).get("authors", [])
+                        ],
+            "year":year,
             "abstract": result.get("snippet"),
             "link": result.get("link"),
         })

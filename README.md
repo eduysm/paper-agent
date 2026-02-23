@@ -18,5 +18,5 @@ papers científicos usando Google Scholar (SerpAPI).
 ## ▶️ Uso
 ```bash
 poetry install
-poetry shell
-python paper_agent/agent.py
+poetry env activate
+python readerAI/agent.py

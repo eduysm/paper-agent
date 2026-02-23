@@ -4,11 +4,18 @@ from smolagents import tool
 
 SERPAPI_KEY = os.getenv("SERPAPI_API_KEY")
 
+if not SERPAPI_KEY:
+    raise ValueError("SERPAPI_KEY no está configurada")
+
 @tool
 def search_papers(query: str, num_results: int = 5) -> list:
     """
     Busca papers académicos en Google Scholar.
     Devuelve título, autores, año, abstract y link.
+
+    Args:
+        query: Consulta que se realiza por parte del usuario para hallar papers
+        num_results: el número de papers que se quiere buscar en la consulta, por defecto, 5 papers
     """
     params = {
         "engine": "google_scholar",

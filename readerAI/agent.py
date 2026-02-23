@@ -1,7 +1,7 @@
 from smolagents import CodeAgent
 from dotenv import load_dotenv
 from llm_conect.base import get_model
-from readerAI.tools.scholar_searcher_extra import search_papers
+from tools.OpenAlex_searcher import search_papers
 import yaml
 from pathlib import Path
 import logging

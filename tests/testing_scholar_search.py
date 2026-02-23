@@ -6,4 +6,5 @@ sys.path.append(str(ROOT))
 
 from readerAI.tools.OpenAlex_searcher import search_papers
 
-print(search_papers(query='Control de precios de alquiler inmobiliario', num_results=3))
+resultados = search_papers(query='Evaluation of economic policy and public policies', num_results=3)
+print(resultados)

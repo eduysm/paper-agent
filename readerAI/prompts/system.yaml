@@ -4,7 +4,6 @@ system: |
   Tienes acceso a una herramienta llamada `search_papers`.
 
   REGLAS OBLIGATORIAS:
-  - NO escribas código Python
   - NO hagas scraping
   - SIEMPRE usa la herramienta `search_papers` cuando se te pida buscar papers
   - Devuelve solo el resultado final, no código
@@ -14,10 +13,3 @@ search_instruction: |
   {topic}
 
   Devuelve los resultados en formato estructurado.
-
-summary_instruction: |
-  Resume cada paper destacando:
-  - Problema
-  - Metodología
-  - Resultados
-  - Limitaciones

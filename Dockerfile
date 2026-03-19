@@ -5,16 +5,16 @@ WORKDIR /app
 # Install Poetry
 RUN pip install --no-cache-dir "poetry>=2.0.0,<3.0.0"
 
-# Copy dependency files first (layer cache)
+# Copy dependency files first (layer cache: invalidated only if lock changes)
 COPY pyproject.toml poetry.lock* ./
 
-# Install dependencies into the system Python (no virtualenv needed in Docker)
+# Install deps only — no root package yet
 RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi --no-root
+    && poetry install --no-interaction --no-ansi --no-root --only main
 
-# Copy source and install the package itself
+# Copy source and install the package itself (no-deps: already installed above)
 COPY src/ ./src/
-RUN poetry install --no-interaction --no-ansi --only-root
+RUN pip install --no-cache-dir --no-deps .
 
 EXPOSE 8000
 

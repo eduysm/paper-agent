@@ -1,6 +1,18 @@
 from typing import List, Optional
 
 
+class UserProfile:
+    def __init__(
+        self,
+        interests: List[str],
+        research_line: Optional[str] = None,
+        example_docs: Optional[List[str]] = None,
+    ) -> None:
+        self.interests = interests
+        self.research_line = research_line
+        self.example_docs = example_docs or []
+
+
 class Paper:
     """Modelo sencillo para representar un paper académico.
 
@@ -32,6 +44,6 @@ class Paper:
         self.link = link
 
 
-__all__ = ["Paper"]
+__all__ = ["Paper", "UserProfile"]
 
 

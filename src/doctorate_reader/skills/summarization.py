@@ -1,7 +1,5 @@
-from smolagents import CodeAgent
-
 from doctorate_reader.schemas import Paper
-from readerAI.llm_conect.base import get_model
+from doctorate_reader.llm import complete
 
 
 def summarize_paper(
@@ -11,10 +9,7 @@ def summarize_paper(
     language: str = "es",
     max_words: int = 120,
 ) -> str:
-    """Genera un resumen breve de un paper enfocado a newsletter.
-
-    Delegamos en el modelo configurado vía `get_model()`.
-    """
+    """Genera un resumen breve de un paper enfocado a newsletter."""
 
     authors = ", ".join(paper.authors) if paper.authors else "Autor/es desconocidos"
 
@@ -37,11 +32,7 @@ Journal: {paper.journal}
 Abstract: {paper.abstract}
 """
 
-    # Creamos un CodeAgent mínimo sin tools para reutilizar la infraestructura
-    # de smolagents y obtener directamente un string como salida.
-    model = get_model()
-    agent = CodeAgent(tools=[], model=model)
-    return agent.run(prompt, max_steps=1)
+    return complete(prompt, max_tokens=max_words * 3)
 
 
 

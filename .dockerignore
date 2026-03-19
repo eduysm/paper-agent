@@ -1,0 +1,13 @@
+readerAI/
+.git/
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+.env
+.env.*
+tests/
+docs/
+*.md
+.claude/

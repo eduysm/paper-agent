@@ -1,6 +1,8 @@
+import warnings
 from datetime import date
 from typing import List, Optional
 
+from doctorate_reader.schemas import UserProfile
 from doctorate_reader.skills.search import search_papers_skill
 from doctorate_reader.skills.filtering import filter_and_rank_papers
 from doctorate_reader.skills.summarization import summarize_paper
@@ -15,14 +17,33 @@ def build_newsletter_html(
     journals: Optional[List[str]] = None,
     min_year: Optional[int] = None,
     only_open_access: bool = False,
+    user_profile: Optional[UserProfile] = None,
 ) -> str:
     """Orquesta la generación de la newsletter en HTML.
 
     1. Busca papers en OpenAlex.
-    2. Filtra/ordena según criterios simples.
+    2. Filtra/ordena (por similitud semántica si hay perfil, o por citas).
     3. Genera resúmenes con el LLM.
     4. Compone un HTML sencillo listo para copiar/pegar.
     """
+
+    user_vector = None
+    if user_profile is not None:
+        from doctorate_reader.skills.embeddings import build_user_vector
+
+        try:
+            user_vector = build_user_vector(
+                interests=user_profile.interests,
+                research_line=user_profile.research_line,
+                example_docs=user_profile.example_docs or None,
+                topic=topic,
+            )
+        except RuntimeError as exc:
+            warnings.warn(
+                f"Could not build user embedding vector: {exc}. "
+                "Falling back to citation-based ranking."
+            )
+            user_vector = None
 
     papers = search_papers_skill(
         topic=topic,
@@ -36,6 +57,7 @@ def build_newsletter_html(
         max_results=num_results,
         min_year=min_year,
         only_open_access=only_open_access,
+        user_vector=user_vector,
     )
 
     top = ranked[:top_n]

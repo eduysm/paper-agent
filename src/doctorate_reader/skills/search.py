@@ -1,7 +1,6 @@
 from typing import List, Optional
 
-from readerAI.tools.OpenAlex_searcher import search_papers
-
+from doctorate_reader.tools.openalex import search_papers
 from doctorate_reader.schemas import Paper
 
 

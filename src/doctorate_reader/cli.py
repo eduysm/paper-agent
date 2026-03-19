@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 from doctorate_reader.workflows.newsletter import build_newsletter_html
 
@@ -9,6 +10,7 @@ def main() -> None:
     )
     parser.add_argument(
         "topic",
+        nargs="?",
         help="Tema de la newsletter, por ejemplo: 'política económica'",
     )
     parser.add_argument(
@@ -34,8 +36,40 @@ def main() -> None:
         action="store_true",
         help="Si se indica, solo incluye papers open access",
     )
+    parser.add_argument(
+        "--profile",
+        metavar="PATH",
+        default=None,
+        help="Ruta a un perfil YAML de usuario para ranking semántico",
+    )
+    parser.add_argument(
+        "--setup-profile",
+        metavar="PATH",
+        default=None,
+        help="Crear perfil interactivo y guardarlo en PATH, luego salir",
+    )
 
     args = parser.parse_args()
+
+    if args.setup_profile:
+        from doctorate_reader.skills.user_profile import (
+            setup_profile_interactive,
+            save_profile,
+        )
+
+        profile = setup_profile_interactive()
+        save_profile(profile, args.setup_profile)
+        print(f"Profile saved to {args.setup_profile}")
+        sys.exit(0)
+
+    if not args.topic:
+        parser.error("topic is required unless --setup-profile is used")
+
+    user_profile = None
+    if args.profile:
+        from doctorate_reader.skills.user_profile import load_profile
+
+        user_profile = load_profile(args.profile)
 
     html = build_newsletter_html(
         topic=args.topic,
@@ -43,6 +77,7 @@ def main() -> None:
         top_n=args.top_n,
         min_year=args.min_year,
         only_open_access=args.only_open_access,
+        user_profile=user_profile,
     )
 
     # Imprimimos el HTML para poder redirigirlo a un archivo o copiar/pegar
